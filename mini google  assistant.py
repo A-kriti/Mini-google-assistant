@@ -6,17 +6,20 @@ import pyjokes
 import cv2
 
 
+
 listener = sr.Recognizer()
 engine = pyttsx3.init()
 voices = engine.getProperty("voices")
-engine.setProperty("voice",voices[1].id)   #use [1]->female voice and [0]-> male voice
+engine.setProperty("voice",voices[0].id)   #use [1]->female voice and [0]-> male voice
 
 def talk(text):
     engine.say(text)
     engine.runAndWait()
 
 def take_command():
+    #global command
     try:
+        
         with sr.Microphone() as source:
             print("Listening.....(speak now)")
             voice = listener.listen(source)
@@ -41,6 +44,11 @@ def run_mini_google_assistant():
         talk("playing the song" + song)
         print(song)
         pywhatkit.playonyt(song)
+    elif "what is" in command:
+        song = command.replace("I found this about","")
+        talk("I found this" + song)
+        print(song)
+        pywhatkit.playonyt(song)
     elif "time" in command:
         time = datetime.datetime.now().strftime("%I:%M%p")
         print(time)
@@ -56,9 +64,10 @@ def run_mini_google_assistant():
         talk (date)
     elif 'how are you' in command:
         talk('I am good. Nice to see you here!')
+
     elif "capture" or "camera" in command:
         talk("Ok I'll do it for you!")
-        talk("Remenber, You can use s button to quit")
+        talk("Remember, You can use s button to quit")
         vid = cv2.VideoCapture(0)
 
         while (True):
@@ -84,14 +93,21 @@ def run_mini_google_assistant():
         vid.release()
         # Destroy all the windows
         cv2.destroyAllWindows()
-
     else:
         talk("Sorry i am not getting you! Can you please repeat!")
+
 
 
 talk("Hello my friend, i am your personal mini google assistant.")
 talk("And i can help you to play song, tell time, tell date, tell joke and i can also capture photo and video for you")
 talk("Now please tell me how can i help you!")
+
 while True:
-    run_mini_google_assistant()
-    #talk("Nice to see you here, I belive that you enjoyed!")
+    talk("Want to give a command")
+    talk("type 'y' or 'yes'")
+    x=input()
+    if(x=='y' or x=='yes'):
+        run_mini_google_assistant()
+    else:
+        talk("Nice to see you here, I belive that you enjoyed!")
+        break;
